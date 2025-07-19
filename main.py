@@ -1,9 +1,11 @@
-from pyrogram import Client
-from pyrogram.handlers import CommandHandler
+# main.py
+
+from pyrogram import Client, filters
+from pyrogram.types import Message
 from config import API_ID, API_HASH, BOT_TOKEN
 from bot.post import post_anime
-from pyrogram.types import Message
 
+# 🔧 Create bot client
 bot = Client(
     "AnimeAutoPosterBot",
     api_id=API_ID,
@@ -11,13 +13,18 @@ bot = Client(
     bot_token=BOT_TOKEN
 )
 
-@bot.on_message(CommandHandler("start"))
+# 👋 Handle /start command
+@bot.on_message(filters.command("start") & filters.private)
 async def start_command(client: Client, message: Message):
     await message.reply_text(
         "👋 Hello Otaku!\n\nI'm your Anime Auto Poster Bot.\nUse /post to post a new anime episode!"
     )
 
-bot.add_handler(CommandHandler("post", post_anime))
+# 🎬 Handle /post command
+@bot.on_message(filters.command("post") & filters.private)
+async def handle_post(client: Client, message: Message):
+    await post_anime(client, message)
 
+# ▶️ Run the bot
 if __name__ == "__main__":
     bot.run()
