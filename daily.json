@@ -1,0 +1,18 @@
+{
+  "animes": [
+    {
+      "title": "My Hero Academia",
+      "episode": "8",
+      "time": "17:30 JST",
+      "platform": "Crunchyroll",
+      "tags": "#MyHeroAcademia #BokuNoHero"
+    },
+    {
+      "title": "Attack on Titan Final Season",
+      "episode": "24",
+      "time": "21:00 JST",
+      "platform": "Netflix",
+      "tags": "#AttackOnTitan #ShingekiNoKyojin"
+    }
+  ]
+}
