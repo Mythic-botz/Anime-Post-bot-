@@ -9,4 +9,4 @@ WATERMARK = os.getenv("WATERMARK", "@Mythic_Animes")
 # Web support 
 WEBHOOK_HOST = "0.0.0.0"
 WEBHOOK_PORT = int(os.getenv("PORT", 8080))  # Render uses this
-WEBHOOK_URL = os.getenv("WEBHOOK_URL", "https://your-app-name.onrender.com/webhook")
+WEBHOOK_URL = os.getenv("WEBHOOK_URL", "https://anime-post-bot-256h.onrender.com")
