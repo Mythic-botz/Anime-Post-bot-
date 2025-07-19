@@ -1,12 +1,12 @@
 import os
 
-API_ID = int(os.getenv("API_ID", "23476863"))
-API_HASH = os.getenv("API_HASH", "69daa0835439c4211f34c2e9ad0acb5c")
-BOT_TOKEN = os.getenv("BOT_TOKEN", "")
-CHANNEL_ID = int(os.getenv("CHANNEL_ID", ""))
-WATERMARK = os.getenv("WATERMARK", "@Mythic_Animes")
+API_ID = int(os.getenv("API_ID"))
+API_HASH = os.getenv("API_HASH")
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 
-# Web support 
+WEBHOOK_URL = os.getenv("WEBHOOK_URL")  # e.g., https://your-render-app.onrender.com
 WEBHOOK_HOST = "0.0.0.0"
-WEBHOOK_PORT = int(os.getenv("PORT", 8080))  # Render uses this
-WEBHOOK_URL = os.getenv("WEBHOOK_URL", "https://anime-post-bot-256h.onrender.com")
+WEBHOOK_PORT = 8000
+
+CHANNEL_ID = int(os.getenv("CHANNEL_ID"))  # e.g., -100xxxxxxxxx
+WATERMARK = os.getenv("WATERMARK", "@Mythic_Animes")
