@@ -52,7 +52,7 @@ if __name__ == "__main__":
 
     async def startup():
         await bot.start()
-        await bot.set_webhook(url=WEBHOOK_URL)
+        await bot.set_webhook(url=https://anime-post-bot-256h.onrender.com)
         print("✅ Webhook set successfully.")
 
     asyncio.get_event_loop().run_until_complete(startup())
