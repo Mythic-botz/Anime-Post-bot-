@@ -1,12 +1,10 @@
 # main.py
 import os
 from fastapi import FastAPI, Request
-from pyrogram import Client
-from pyrogram.types import Update
+from pyrogram import Client, filters
+from pyrogram.types import Update, Message
 from config import API_ID, API_HASH, BOT_TOKEN, WEBHOOK_URL, WEBHOOK_PORT, WEBHOOK_HOST
 from bot.post import post_anime
-from pyrogram import filters
-from pyrogram.types import Message
 import uvicorn
 
 app = FastAPI()
@@ -19,6 +17,18 @@ bot = Client(
     workdir="./runtime",
     in_memory=True
 )
+
+# ✅ Register /start command
+@bot.on_message(filters.command("start") & filters.private)
+async def start_command(client: Client, message: Message):
+    await message.reply_text(
+        "👋 Hello Otaku!\n\nI'm your Anime Auto Poster Bot.\nUse /post to post a new anime episode!"
+    )
+
+# ✅ Register /post command
+@bot.on_message(filters.command("post") & filters.private)
+async def handle_post(client: Client, message: Message):
+    await post_anime(client, message)
 
 @app.on_event("startup")
 async def startup():
@@ -36,6 +46,5 @@ async def telegram_webhook(request: Request):
     await bot.process_update(update)
     return {"ok": True}
 
-# Run FastAPI server
 if __name__ == "__main__":
     uvicorn.run("main:app", host=WEBHOOK_HOST, port=WEBHOOK_PORT)
