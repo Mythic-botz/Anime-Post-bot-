@@ -1,9 +1,11 @@
+# bot/post.py
 from pyrogram import Client
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from config import CHANNEL_ID, WATERMARK
 
 async def post_anime(client: Client, message: Message):
     try:
+        # Split the command message to extract content
         content = message.text.split(" ", 1)[1]
     except IndexError:
         await message.reply_text("⚠️ Usage: `/post Anime Name EpXX | [Watch Link] [Download Link]`", quote=True)
