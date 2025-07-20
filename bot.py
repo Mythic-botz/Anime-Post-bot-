@@ -9,51 +9,37 @@ from pyrogram.types import Update
 API_ID = int(os.getenv("API_ID"))
 API_HASH = os.getenv("API_HASH")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-WEBHOOK_URL = os.getenv("WEBHOOK_URL")  # https://your-app.onrender.com/
 
-# ✅ Initialize Pyrogram Client
+# ✅ Pyrogram Bot Client (in-memory session, avoids flood)
 bot = Client(
-    name=None,
+    name=":memory:",  # ➜ avoids file system session creation
     api_id=API_ID,
     api_hash=API_HASH,
     bot_token=BOT_TOKEN
 )
 
-# ✅ Load handlers (you must call this)
-from handlers import setup_handlers
-setup_handlers(bot)
-
 # ✅ FastAPI App
 app = FastAPI()
 
-
-# ✅ Webhook handler
+# ✅ Webhook Handler
 @app.post("/")
-async def telegram_webhook(request: Request):
+async def webhook_handler(request: Request):
     try:
         data = await request.json()
-        update = Update.de_json(data, bot)  # ✅ Correct for webhook-based updates
-        await bot.process_update(update)    # ✅ THIS is the correct method
+        update = Update(data)
+        await bot.invoke_update(update)
         return {"ok": True}
     except Exception as e:
         print(f"❌ Error handling update: {e}")
         return {"ok": False, "error": str(e)}
 
-
-# ✅ Startup: Start bot and set webhook
+# ✅ FastAPI Lifecycle Hooks
 @app.on_event("startup")
-async def startup():
-    print("🚀 Starting bot...")
+async def startup_event():
+    print("🚀 Bot starting...")
     await bot.start()
-    try:
-        await bot.set_webhook(WEBHOOK_URL)
-        print(f"✅ Webhook set to {WEBHOOK_URL}")
-    except Exception as e:
-        print(f"❌ Webhook error: {e}")
 
-
-# ✅ Shutdown: Stop bot
 @app.on_event("shutdown")
-async def shutdown():
-    print("🛑 Stopping bot...")
+async def shutdown_event():
+    print("🛑 Bot stopping...")
     await bot.stop()
