@@ -20,10 +20,10 @@ import handlers
 
 
 async def start():
-    await app.start()
+    await bot.start()
     print("[✅] Bot started with webhook.")
 
-    await app.set_webhook(
+    await bot.set_webhook(
         url=config["webhook_url"],
         max_connections=40
     )
