@@ -126,9 +126,20 @@ async def conversation_handler(client, message: Message):
         await message.reply_text("✅ Anime successfully added to schedule!")
 
 
+from pyrogram.handlers import MessageHandler, CommandHandler
+
 def setup_handlers(app):
-    app.add_handler(filters.command("start")(start_handler))
-    app.add_handler(filters.command("about")(about_handler))
-    app.add_handler(filters.command("schedule")(schedule_handler))
-    app.add_handler(filters.command("addanime")(addanime_handler))
-    app.add_handler(filters.text & filters.private)(conversation_handler)
+    # ✅ Start command
+    app.add_handler(CommandHandler("start", start_handler))
+
+    # ✅ About command
+    app.add_handler(CommandHandler("about", about_handler))
+
+    # ✅ Schedule command
+    app.add_handler(CommandHandler("schedule", schedule_handler))
+
+    # ✅ AddAnime command
+    app.add_handler(CommandHandler("addanime", addanime_handler))
+
+    # ✅ Fallback for private text messages
+    app.add_handler(MessageHandler(conversation_handler, filters.text & filters.private)))
