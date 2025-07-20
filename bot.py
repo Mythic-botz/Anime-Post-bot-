@@ -32,11 +32,16 @@ async def start_web_server():
     await site.start()
     print(f"🌍 Web server running on port {os.environ.get('PORT', 10000)}")
 
-# ✅ Run bot and web server together
-async def main():
-    asyncio.create_task(start_web_server())           # background task
-    asyncio.create_task(daily_post_scheduler(bot))    # background task
-    
-if __name__ == "__main__":
-    await bot.run()  # ✅ handles .start(), .idle(), .stop() internally
+# ✅ Custom startup routine
+async def start_bot():
+    await bot.start()
+    print("🤖 Bot started!")
+    asyncio.create_task(start_web_server())            # start dummy HTTP server
+    asyncio.create_task(daily_post_scheduler(bot))     # start post scheduler
+    await bot.idle()
+    await bot.stop()
+    print("🛑 Bot stopped.")
 
+# 🔁 Correct entry point without await at top level
+if __name__ == "__main__":
+    asyncio.run(start_bot())
