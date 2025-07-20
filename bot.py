@@ -8,10 +8,8 @@ from utils import load_config
 from scheduler import daily_post_scheduler
 from handlers import setup_handlers
 
-# ✅ Load config
 config = load_config()
 
-# ✅ Initialize bot client
 bot = Client(
     "anime-bot",
     api_id=config["api_id"],
@@ -19,12 +17,11 @@ bot = Client(
     bot_token=config["bot_token"]
 )
 
-# ✅ Setup all command handlers
-setup_handlers(bot)
+setup_handlers(bot)  # ⬅️ set all handlers
 
-# 🌐 Dummy web server to keep Render happy
+# 🌐 Dummy web server for Render
 async def handle(request):
-    return web.Response(text="✅ Anime Post Bot is running!")
+    return web.Response(text="✅ Anime Post Bot is alive!")
 
 async def start_web_server():
     app = web.Application()
@@ -35,16 +32,11 @@ async def start_web_server():
     await site.start()
     print(f"🌍 Web server running on port {os.environ.get('PORT', 10000)}")
 
-# ✅ Main bot startup
-async def start():
-    await bot.start()
-    print("✅ Bot started with long polling")
-
-    asyncio.create_task(daily_post_scheduler(bot))
-    asyncio.create_task(start_web_server())
-
-    await bot.stop()  # ends after long polling unless .idle() is replaced
-    print("🛑 Bot stopped.")
+# ✅ Run bot and web server together
+async def main():
+    asyncio.create_task(start_web_server())           # background task
+    asyncio.create_task(daily_post_scheduler(bot))    # background task
+    await bot.run()  # ✅ handles .start(), .idle(), .stop() internally
 
 if __name__ == "__main__":
-    asyncio.run(start())
+    asyncio.run(main())
