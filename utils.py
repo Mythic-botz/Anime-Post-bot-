@@ -1,19 +1,16 @@
-import json
+# bot/utils.py
+
 from datetime import datetime
+import pytz
+from config import TIMEZONE
 
-def generate_daily_post():
-    with open("daily.json", "r", encoding="utf-8") as f:
-        data = json.load(f)
+def get_today_date():
+    tz = pytz.timezone(TIMEZONE)
+    return datetime.now(tz).strftime("%A – %B %d")  # Example: Sunday – July 21
 
-    date_str = datetime.now().strftime("%d %B %Y")
-    post_lines = [f"📅 **{date_str} Anime Release Guide**\n"]
+def is_admin(user_id: int) -> bool:
+    from config import ADMINS
+    return user_id in ADMINS
 
-    for anime in data.get("animes", []):
-        title = anime.get("title", "Unknown")
-        ep = anime.get("episode", "?")
-        time = anime.get("time", "??:??")
-        platform = anime.get("platform", "Unknown")
-        tags = anime.get("tags", "")
-        post_lines.append(f"🆕 **{title}** - Ep {ep}\n🕒 {time} | 📺 {platform}\n{tags}\n")
-
-    return "\n".join(post_lines)
+def log_error(e: Exception):
+    print(f"[ERROR] {type(e).__name__}: {e}")
