@@ -4,7 +4,6 @@ import asyncio
 from pyrogram import Client
 from utils import load_config
 from scheduler import daily_post_scheduler
-import handlers  # make sure this file uses `app`, not `bot`
 from aiohttp import web
 
 config = load_config()
@@ -15,6 +14,8 @@ app = Client(
     api_hash=config["api_hash"],
     bot_token=config["bot_token"]
 )
+
+import handlers  # make sure this file uses `app`, not `bot`
 
 # --- Dummy HTTP server to satisfy Render ---
 async def handle(request):
