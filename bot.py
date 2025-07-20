@@ -36,7 +36,7 @@ async def start_web_server():
 async def main():
     asyncio.create_task(start_web_server())           # background task
     asyncio.create_task(daily_post_scheduler(bot))    # background task
+    
+if __name__ == "__main__":
     await bot.run()  # ✅ handles .start(), .idle(), .stop() internally
 
-if __name__ == "__main__":
-    asyncio.run(main())
