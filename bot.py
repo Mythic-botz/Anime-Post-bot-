@@ -1,15 +1,13 @@
 # bot.py
-import asyncio
 from pyrogram import Client
-from pyrogram.idle import idle
-
 from utils import load_config
 from scheduler import daily_post_scheduler
+import asyncio
 
-# Load configuration
+# Load config from JSON
 config = load_config()
 
-# Initialize the Pyrogram Client
+# Create bot client
 bot = Client(
     "anime-bot",
     api_id=config["api_id"],
@@ -17,18 +15,20 @@ bot = Client(
     bot_token=config["bot_token"]
 )
 
-# ✅ Import handlers only AFTER bot is defined to avoid circular import
-import handlers  # This registers command handlers using `bot`
+# Import handlers AFTER bot is defined
+import handlers  # this will register all command handlers
 
-# Main async runner
-async def main():
+# Function to launch bot and scheduler
+async def start_bot():
     await bot.start()
-    print("[✅] Bot started successfully.")
+    print("[✅] Bot started.")
 
-    # Launch the scheduler to auto-post daily
+    # Start the scheduler task
     asyncio.create_task(daily_post_scheduler(bot))
 
-    await idle()  # Keeps the bot alive
+    # Keep the bot running
+    await bot.idle()
 
+# Run the bot
 if __name__ == "__main__":
-    asyncio.run(main())
+    asyncio.run(start_bot())
