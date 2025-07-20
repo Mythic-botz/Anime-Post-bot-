@@ -17,7 +17,7 @@ bot = Client(
     bot_token=config["bot_token"]
 )
 
-# 🌐 Dummy Web Server for Render
+# 🌐 Dummy web server
 async def handle(request):
     return web.Response(text="✅ Anime Post Bot is alive!")
 
@@ -30,19 +30,18 @@ async def start_web_server():
     await site.start()
     print(f"🌍 Web server running on port {os.environ.get('PORT', 8000)}")
 
-# ✅ Schedule daily post before bot.run()
+# 🎯 Main logic
 async def setup_and_run():
     await start_web_server()
     setup_handlers(bot)
-    asyncio.create_task(daily_post_scheduler(bot))  # Background scheduler
+    asyncio.create_task(daily_post_scheduler(bot))
+    bot.run()
 
-    bot.run()  # ✅ Do not await this
-
-# 🚀 Start the bot
+# 🚀 Entry point
 if __name__ == "__main__":
     try:
         asyncio.run(setup_and_run())
-    except RuntimeError as e:
-        # 💥 This happens if event loop is already running (Render edge case)
-        loop = asyncio.get_event_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
         loop.run_until_complete(setup_and_run())
