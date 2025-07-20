@@ -1,8 +1,9 @@
 {
-  "bot_token": "your_bot_token",
-  "api_id": "123456",
-  "api_hash": "your_api_hash",
-  "webhook_url": "https://your-app-name.onrender.com",
+  "bot_token": "7866933299:AAFCVFYwuzDbez1A-5gQkbx4yphfPUP0Yqg",
+  "api_id": 23476863,
+  "api_hash": "69daa0835439c4211f34c2e9ad0acb5c",
+  "webhook_url": "https://anime-post-bot-256h.onrender.com",
   "post_time": "21:00",
-  "channel_id": "-100xxxxxxxxxx"
+  "channel_id": "-1002018895438",
+  "admins": 6617544956
 }
