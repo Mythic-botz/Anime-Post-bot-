@@ -1,39 +1,37 @@
 # bot.py
 import os
-import asyncio
+import logging
 from fastapi import FastAPI, Request
-from fastapi import FastAPI
-from contextlib import asynccontextmanager
 from pyrogram import Client
-from dotenv import load_dotenv
-import uvicorn
+from pyrogram.types import Update
 
-load_dotenv()
-
-BOT_TOKEN = os.getenv("BOT_TOKEN")
+# Load ENV
 API_ID = int(os.getenv("API_ID"))
 API_HASH = os.getenv("API_HASH")
-WEBHOOK_URL = os.getenv("WEBHOOK_URL")  # example: https://your-app.onrender.com
-PORT = int(os.getenv("PORT", 8000))
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+WEBHOOK_URL = os.getenv("WEBHOOK_URL")  # Your Render webhook URL
 
-bot = Client("animebot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
+# Bot instance
+bot = Client("my_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 
-# ✅ New lifespan event handling (replaces on_event)
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    print("🔄 Starting bot with webhook...")
+# FastAPI app
+app = FastAPI()
+
+@app.on_event("startup")
+async def startup():
+    logging.info("🔄 Starting bot...")
     await bot.start()
-    await bot.set_webhook(WEBHOOK_URL)
-    print(f"✅ Webhook set to {WEBHOOK_URL}")
-    yield
-    print("🔻 Stopping bot...")
+    logging.info("✅ Bot started!")
+
+@app.on_event("shutdown")
+async def shutdown():
+    logging.info("⏹️ Stopping bot...")
     await bot.stop()
+    logging.info("🚫 Bot stopped!")
 
-app = FastAPI(lifespan=lifespan)
-
-# ✅ Webhook endpoint
 @app.post("/")
-async def telegram_webhook(request: Request):
-    data = await request.body()
-    await bot.process_update(data)
+async def webhook_handler(request: Request):
+    data = await request.json()
+    update = Update.de_json(data)
+    await bot.dispatcher.feed_update(update)
     return {"ok": True}
