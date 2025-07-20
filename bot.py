@@ -1,7 +1,6 @@
 # bot.py
 
 import asyncio
-import asyncio
 from pyrogram import Client
 from utils import load_config
 from scheduler import daily_post_scheduler
@@ -37,13 +36,10 @@ async def main():
     asyncio.create_task(daily_post_scheduler(app))
     asyncio.create_task(start_web_server())
     await app.idle()
-
 # Expose app for import
     bot = app
+
 
 if __name__ == "__main__":
     import os
     asyncio.run(main())
-
-if __name__ == "__main__":
-    asyncio.run(start())
