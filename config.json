@@ -3,6 +3,6 @@
   "api_id": 123456,
   "api_hash": "abc123...",
   "webhook_url": "https://your-app.onrender.com",
-  "post_time": "21:00", 
+  "post_time": "21:00",
   "channel_id": "-100xxxxxxxxxx"
 }
