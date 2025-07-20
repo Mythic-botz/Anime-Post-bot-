@@ -2,7 +2,6 @@
 import os
 from fastapi import FastAPI, Request
 from pyrogram import Client
-from pyrogram.types import Update
 
 # ⚙️ Environment Variables
 API_ID = int(os.getenv("API_ID"))
@@ -15,13 +14,12 @@ bot = Client("anime_post_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_T
 # ✅ Initialize FastAPI app
 app = FastAPI()
 
-# ✅ Webhook route
+# ✅ Webhook endpoint to receive updates
 @app.post("/")
 async def webhook_handler(request: Request):
     try:
         data = await request.json()
-        update = Update(data)  # ✅ Correct usage for Pyrogram v2
-        await bot.invoke_update(update)
+        await bot._dispatch_raw_update(data)  # ✅ Correct internal method
         return {"ok": True}
     except Exception as e:
         print(f"❌ Error handling update: {e}")
