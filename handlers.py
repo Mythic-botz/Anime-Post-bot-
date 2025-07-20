@@ -124,3 +124,11 @@ async def conversation_handler(client, message: Message):
         anime_draft.pop(user_id)
 
         await message.reply_text("✅ Anime successfully added to schedule!")
+
+
+def setup_handlers(app):
+    app.add_handler(filters.command("start")(start_handler))
+    app.add_handler(filters.command("about")(about_handler))
+    app.add_handler(filters.command("schedule")(schedule_handler))
+    app.add_handler(filters.command("addanime")(addanime_handler))
+    app.add_handler(filters.text & filters.private)(conversation_handler)
