@@ -4,7 +4,7 @@ from pyrogram.types import Message
 from pyrogram.enums import ChatAction
 from utils import load_config, load_schedule
 import json
-from bot import bot
+from bot import app
 
 @bot.on_message(filters.command("start") & filters.private)
 async def start(client, message: Message):
