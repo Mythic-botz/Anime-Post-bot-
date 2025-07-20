@@ -1,5 +1,5 @@
 # bot.py
-from pyrogram import Client
+from pyrogram import Client, idle
 from utils import load_config
 from scheduler import daily_post_scheduler
 import asyncio
