@@ -1,31 +1,35 @@
 # bot.py
 
 import asyncio
-from pyrogram import Client, idle
+from pyrogram import Client
+from pyrogram.types import Update
 from utils import load_config
 from scheduler import daily_post_scheduler
-import handlers  # this imports command handlers and attaches to the bot
+import handlers
 
-# Load config from config.json
 config = load_config()
 
-# Create the bot client
-bot = Client(
-    "anime_post_bot",
+app = Client(
+    "anime-bot",
     api_id=config["api_id"],
     api_hash=config["api_hash"],
     bot_token=config["bot_token"]
 )
 
-async def start_bot():
-    await bot.start()
-    print("[✅] Bot started.")
+async def start():
+    await app.start()
+    print("[✅] Bot started with webhook.")
 
-    # Start the post scheduler
-    asyncio.create_task(daily_post_scheduler(bot))
+    await app.set_webhook(
+        url=config["webhook_url"],
+        max_connections=40
+    )
 
-    # Keep the bot running
-    await idle()
+    # Start scheduler
+    asyncio.create_task(daily_post_scheduler(app))
+
+    # Keep running forever
+    await asyncio.Event().wait()
 
 if __name__ == "__main__":
-    asyncio.run(start_bot())
+    asyncio.run(start())
