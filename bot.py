@@ -5,16 +5,19 @@ from pyrogram import Client
 from pyrogram.types import Update
 from utils import load_config
 from scheduler import daily_post_scheduler
-import handlers
+
 
 config = load_config()
 
-app = Client(
+bot = Client(
     "anime-bot",
     api_id=config["api_id"],
     api_hash=config["api_hash"],
     bot_token=config["bot_token"]
 )
+
+import handlers
+
 
 async def start():
     await app.start()
