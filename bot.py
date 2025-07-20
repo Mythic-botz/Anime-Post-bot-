@@ -3,45 +3,43 @@
 import os
 import asyncio
 from pyrogram import Client
-from aiohttp import web
-from utils import load_config
-from scheduler import daily_post_scheduler
 from handlers import setup_handlers
-
-config = load_config()
+from utils.web_server import start_web_server
+from utils.schedule import daily_post_scheduler
+from config import API_ID, API_HASH, BOT_TOKEN, BOT_NAME
 
 bot = Client(
-    "anime-bot",
-    api_id=config["api_id"],
-    api_hash=config["api_hash"],
-    bot_token=config["bot_token"]
+    name=BOT_NAME,
+    api_id=API_ID,
+    api_hash=API_HASH,
+    bot_token=BOT_TOKEN
 )
 
-# 🌐 Dummy web server
-async def handle(request):
-    return web.Response(text="✅ Anime Post Bot is alive!")
-
-async def start_web_server():
-    app = web.Application()
-    app.router.add_get("/", handle)
-    runner = web.AppRunner(app)
-    await runner.setup()
-    site = web.TCPSite(runner, "0.0.0.0", port=int(os.environ.get("PORT", 8000)))
-    await site.start()
-    print(f"🌍 Web server running on port {os.environ.get('PORT', 8000)}")
-
-# 🎯 Main logic
-async def setup_and_run():
+async def main():
+    print("🌍 Starting web server...")
     await start_web_server()
-    setup_handlers(bot)
-    asyncio.create_task(daily_post_scheduler(bot))
-    bot.run()
 
-# 🚀 Entry point
+    print("✅ Registering handlers...")
+    setup_handlers(bot)
+
+    print("⏰ Starting daily post scheduler...")
+    asyncio.create_task(daily_post_scheduler(bot))
+
+    print("🤖 Starting bot...")
+    await bot.start()
+    print("✅ Bot started.")
+
+    await bot.idle()
+    print("👋 Bot stopped.")
+
 if __name__ == "__main__":
     try:
-        asyncio.run(setup_and_run())
-    except RuntimeError:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        loop.run_until_complete(setup_and_run())
+        asyncio.run(main())
+    except RuntimeError as e:
+        # Fallback for Render's already running loop
+        loop = asyncio.get_event_loop()
+        if loop.is_running():
+            print("⚠️ Event loop already running. Using create_task fallback.")
+            loop.create_task(main())
+        else:
+            loop.run_until_complete(main())
