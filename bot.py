@@ -17,7 +17,7 @@ bot = Client(
     bot_token=config["bot_token"]
 )
 
-setup_handlers(bot)  # ⬅️ set all handlers
+setup_handlers(bot)  # ⬅️ register handlers here
 
 # 🌐 Dummy web server for Render
 async def handle(request):
@@ -32,16 +32,11 @@ async def start_web_server():
     await site.start()
     print(f"🌍 Web server running on port {os.environ.get('PORT', 10000)}")
 
-# ✅ Custom startup routine
-async def start_bot():
-    await bot.start()
-    print("🤖 Bot started!")
-    asyncio.create_task(start_web_server())            # start dummy HTTP server
-    asyncio.create_task(daily_post_scheduler(bot))     # start post scheduler
-    await bot.idle()
-    await bot.stop()
-    print("🛑 Bot stopped.")
+# ✅ Run everything together
+async def main():
+    await start_web_server()                      # start dummy server
+    asyncio.create_task(daily_post_scheduler(bot))  # schedule posts
+    await bot.run()  # ✅ this keeps the bot alive
 
-# 🔁 Correct entry point without await at top level
 if __name__ == "__main__":
-    asyncio.run(start_bot())
+    asyncio.run(main())
