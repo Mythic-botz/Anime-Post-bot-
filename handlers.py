@@ -142,4 +142,4 @@ def setup_handlers(app):
     app.add_handler(CommandHandler("addanime", addanime_handler))
 
     # ✅ Fallback for private text messages
-    app.add_handler(MessageHandler(conversation_handler, filters.text & filters.private)))
+    app.add_handler(MessageHandler(conversation_handler, filters.text & filters.private))
